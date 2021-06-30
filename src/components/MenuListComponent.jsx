@@ -15,6 +15,7 @@ import {
   BsFillTrashFill,
   BsFillPlusSquareFill
 } from "react-icons/bs";
+import { Redirect } from 'react-router';
 
 class MenuListComponent extends Component {
   
@@ -23,10 +24,10 @@ class MenuListComponent extends Component {
 
     this.state = {
       showEdit: false,
-      showAddMenuItem: false,
       actualMenu: props.store.menus.getMenuById(props.id),
       showAddContent: false,
       newItem: {},
+      navigate: false,
     };
 
     this.nameInputRef = React.createRef()
@@ -38,13 +39,15 @@ class MenuListComponent extends Component {
   }
 
   removeCurrentMenu = () => {
-
+    this.props.store.menus.deleteMenu(this.props.id);
+    this.setState({ actualMenu: {}, navigate: true });
   }
 
   handleMenuDetailsChange = (event) => {
     const { actualMenu } = this.state;
     const { name, value } = event.target;
     if (name === 'name') {
+      console.log('asfd', name, value)
       this.nameInputRef.current.classList.remove('is-invalid');
       this.nameInputRef.current.placeholder = ''
       actualMenu.id = value.toLowerCase().replace(/ /g, '-');
@@ -127,12 +130,17 @@ class MenuListComponent extends Component {
 
   render() {
     const { store, id } = this.props;
+
+    if (this.state.navigate) {
+      return <Redirect to="/" push={true} />
+    }
+
     return (
       <React.Fragment>
         <Container>
           <Row>
             <Col xs={10} className="menu-description">
-              {store.menus.getMenuById(id).description}
+              {this.state.actualMenu.description}
             </Col>
             <Col>
               <div className="control-menu">
@@ -155,7 +163,7 @@ class MenuListComponent extends Component {
                   placement="bottom"
                   overlay={<Tooltip id={`tooltip-bottom`}>Add Content</Tooltip>}
                 >
-                  <BsFillPlusSquareFill onClick={() => this.setState({ showAddMenuItem: true })} />
+                  <BsFillPlusSquareFill onClick={() => this.setState({ showAddContent: true })} />
                 </OverlayTrigger>
               </div>
             </Col>
@@ -256,7 +264,6 @@ class MenuListComponent extends Component {
               <div className="form-group">
                 <label htmlFor="price">Price</label>
                 <input
-                  type="number"
                   className="form-control"
                   id="price"
                   required
@@ -285,7 +292,6 @@ class MenuListComponent extends Component {
               <div className="form-group">
                 <label htmlFor="quantity">Quantity</label>
                 <input
-                  type="number"
                   className="form-control"
                   id="quantity"
                   required

@@ -77,6 +77,7 @@ class MainPage extends Component {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="mr-auto">
+                <Nav.Link href="/">Home</Nav.Link>
                 {store.menus.list.map((menu) => {
                     return (
                       <Nav.Link href={menu.name} key={menu.id}>
@@ -149,6 +150,7 @@ class MainPage extends Component {
               </Button>
             </Modal.Footer>
           </Modal>
+              <div> Home page</div>
         </React.Fragment>
       </Router>
     );

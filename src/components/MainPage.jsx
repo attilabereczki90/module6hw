@@ -9,13 +9,10 @@ class MainPage extends Component {
   constructor(props) {
     super(props);
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.closeAddMenu = this.closeAddMenu.bind(this);
-    this.resetFields = this.resetFields.bind(this);
-
     this.state = {
       newMenuObject: {},
       showAdd: false,
+      selectedTab: 'home',
     }
     this.nameInputRef = React.createRef();
     this.descInputRef = React.createRef();

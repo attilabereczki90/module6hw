@@ -1,49 +1,17 @@
 import _ from 'lodash';
-import { action, makeObservable, observable } from 'mobx';
+import { action, observable } from 'mobx';
+import { persist } from 'mobx-persist';
 import MenuItem from './MenuItem';
 
 class MenuList {
-  list = [];
+  @persist('list') @observable list = [];
 
-  constructor() {
-    makeObservable(this, {
-      list: observable.deep,
-      getMenuById: action,
-      createMenu: action,
-      updateMenu: action,
-      deleteMenu: action,
-    });
-
-    this.init();
-  }
-
-  init() {
-    this.list = [
-      {
-        id: "menu-starters",
-        name: "Starters",
-        description: "Prepare your tummy for happy meal",
-        itemList: [
-          new MenuItem({id: 'bread-item', name: 'Bread', mainIngredients: 'flour, salt', quantity: '350g', price: '16.88$' }),
-          new MenuItem({id: 'tapas-item', name: 'Tapas', mainIngredients: 'salt, pepper', quantity: '310ml', price: '23.76$' }),
-        ],
-      },
-      {
-        id: "menu-soups",
-        name: "Soups",
-        description: "Enjoy fancy ingredients in water",
-        itemList: [
-          new MenuItem({id: 'tomato-item', name: 'Tomato Soup', mainIngredients: 'tomato, water', quantity: '300ml', price: '41.1$' }),
-          new MenuItem({id: 'broccoli-item', name: 'Creamy Broccoli', mainIngredients: 'broccoli, water', quantity: '322ml', price: '1.62$' }),
-        ],
-      }
-    ];
-  }
-
+  @action
   getMenuById(menuId) {
     return _.find(this.list, menu => menu.id === menuId);
   }
 
+  @action
   createMenu(menu = { id: '', name: '', description: '', itemList: [] }) {
     const items = [];
     if(menu.itemList.length > 0) {
@@ -56,6 +24,7 @@ class MenuList {
     return menu;
   }
 
+  @action
   updateMenu(menuId, key, value) {
     const menuIndexAtId = this.list.findIndex(
       (menu) => menu.id === menuId
@@ -65,6 +34,7 @@ class MenuList {
     }
   }
 
+  @action
   deleteMenu(menuId) {
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if (menuIndexAtId > -1) {
@@ -72,6 +42,7 @@ class MenuList {
     }
   }
 
+  @action
   addItemToList(menuId, item) {
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if(menuIndexAtId > -1) {
@@ -79,6 +50,7 @@ class MenuList {
     }
   }
 
+  @action
   removeItem(menuId, itemId) {
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if(menuIndexAtId > -1) {
@@ -87,6 +59,7 @@ class MenuList {
     }
   }
 
+  @action
   getMenuItemById(menuId, itemId) {
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if(menuIndexAtId > -1) {

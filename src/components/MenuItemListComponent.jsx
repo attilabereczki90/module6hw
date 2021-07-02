@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import {
   OverlayTrigger,
   Tooltip,
@@ -8,75 +8,34 @@ import {
   Col
 } from "react-bootstrap";
 import { BsPencil, BsFillTrashFill } from "react-icons/bs";
+import store from '../store/MenuStore';
+import _ from "lodash";
 
+@observer
 class MenuItemListComponent extends Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      actualMenu: props.store.menus.getMenuById(props.menuId),
-      actualItem: props.menuItem,
-    };
-    console.log('menuitem', props.menuItem)
-    
-    this.itemNameRef = React.createRef();
-    this.itemPriceRef = React.createRef();
-    this.itemQuantityRef = React.createRef();
-  }
-
-  handleContentDetailsChange = (event) => {
-    const { actualItem } = this.state;
-    const { name, value } = event.target;
-    if (name === 'name') {
-      this.itemNameRef.current.classList.remove('is-invalid');
-      this.itemNameRef.current.placeholder = '';
-      actualItem.name = value;
-    } else {
-      this.itemPriceRef.current.classList.remove('is-invalid');
-      this.itemPriceRef.current.placeholder = ''
-      this.itemQuantityRef.current.classList.remove('is-invalid');
-      this.itemQuantityRef.current.placeholder = ''
-      actualItem[name] = value;
-    }
-    this.setState({ actualItem });
-  }
-
-  validateInputFields = () => {
-    let isValid = true;
-    if(!this.itemNameRef.current.defaultValue) {
-      this.itemNameRef.current.classList.add('is-invalid');
-      this.itemNameRef.current.placeholder = 'Name must not be empty'
-      isValid = false;
-    }
-    if(!this.itemPriceRef.current.defaultValue) {
-      this.itemPriceRef.current.classList.add('is-invalid');
-      this.itemPriceRef.current.placeholder = 'Price field must not be empty'
-      isValid = false;
-    }
-    if(!this.itemQuantityRef.current.defaultValue) {
-      this.itemQuantityRef.current.classList.add('is-invalid');
-      this.itemQuantityRef.current.placeholder = 'Quantity field must not be empty'
-      isValid = false;
-    }
-
-    return isValid;
+    this.actualItem = store.menus.getMenuItemById(props.menuId, props.menuItemId);
   }
 
   render() {
-    const { actualItem } = this.state;
-    console.log('actual',this.props.menuItem)
+    const actualItem = store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId);
+    console.log('actualitem',this.actualItem)
+    console.log('storeitem',store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId))
+    console.log('cloneditem', Object.assign({}, store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId)))
     return (
       <React.Fragment>
-        <Container>
+        <Container className={'content'}>
           <Row>
             <Col xs={10}>
               <div>
-                {actualItem.name}
-                {actualItem.price}
+                <span className={'meal-name'}>{actualItem.name}</span>
+                <span className={'meal-price'}>{actualItem.price}</span>
               </div>
-              <div>
-                {actualItem.quantity}
+              <div  className={'meal-description'}>
+                {actualItem.ingredients} / Quantity: {actualItem.quantity}
               </div>
             </Col>
             <Col>
@@ -86,7 +45,7 @@ class MenuItemListComponent extends Component {
                 placement="bottom"
                 overlay={<Tooltip id={`tooltip-bottom`}>Edit Content</Tooltip>}
               >
-                <BsPencil onClick={() => this.props.showModal(actualItem)} />
+                <BsPencil onClick={() => this.props.showModal(actualItem.id)} />
               </OverlayTrigger>
               <OverlayTrigger
                 key={`bottom-${actualItem.id}-remove`}
@@ -106,4 +65,4 @@ class MenuItemListComponent extends Component {
   }
 }
 
-export default observer(({store, menuId, menuItem, removeItem, showModal}) => <MenuItemListComponent store={store} menuId={menuId} menuItem={menuItem} removeItem={removeItem} showModal={showModal} />);
+export default MenuItemListComponent;

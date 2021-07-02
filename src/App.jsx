@@ -1,13 +1,15 @@
-import MenuStore from "./store/MenuStore";
+import React from 'react';
+import store from "./store/MenuStore";
 import MainPage from "./components/MainPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
-  const store = new MenuStore();
+  window.store = store;
+
   return (
     <div className="App">
-      <MainPage store={store} />
+      <MainPage />
     </div>
   );
 }

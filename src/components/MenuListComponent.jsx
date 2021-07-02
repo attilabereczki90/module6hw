@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import {
   Button,
   Modal,
@@ -16,7 +16,9 @@ import {
 } from "react-icons/bs";
 import { Redirect } from 'react-router';
 import MenuItemListComponent from "./MenuItemListComponent";
+import store from '../store/MenuStore';
 
+@observer
 class MenuListComponent extends Component {
   
   constructor(props) {
@@ -24,7 +26,7 @@ class MenuListComponent extends Component {
 
     this.state = {
       showEdit: false,
-      actualMenu: props.store.menus.getMenuById(props.id),
+      actualMenu: store.menus.getMenuById(props.id),
       showContentModal: false,
       newItem: {},
       navigate: false,
@@ -37,10 +39,11 @@ class MenuListComponent extends Component {
     this.itemNameRef = React.createRef();
     this.itemPriceRef = React.createRef();
     this.itemQuantityRef = React.createRef();
+    this.ingredientsRef = React.createRef();
   }
 
   removeCurrentMenu = () => {
-    this.props.store.menus.deleteMenu(this.props.id);
+    store.menus.deleteMenu(this.props.id);
     this.setState({ actualMenu: {}, navigate: true });
   }
 
@@ -73,8 +76,8 @@ class MenuListComponent extends Component {
       this.descInputRef.current.placeholder = 'Description must not be empty'
       return;
     }
-    this.props.store.menus.updateMenu(actualMenu.id, 'name', actualMenu.name);
-    this.props.store.menus.updateMenu(actualMenu.id, 'description', actualMenu.description);
+    store.menus.updateMenu(actualMenu.id, 'name', actualMenu.name);
+    store.menus.updateMenu(actualMenu.id, 'description', actualMenu.description);
     this.setState({showEdit: false});
   };
 
@@ -86,9 +89,9 @@ class MenuListComponent extends Component {
     }
     
     if(isNew) {
-      this.props.store.addMenuItem(actualMenu.id, newItem);
+      store.addMenuItem(actualMenu.id, newItem);
     } else {
-      this.props.store.updateMenuItem(actualMenu.id, newItem)
+      store.updateMenuItem(actualMenu.id, newItem)
     }
     
     this.setState({showContentModal: false, newItem: {}});
@@ -109,6 +112,8 @@ class MenuListComponent extends Component {
       this.itemPriceRef.current.placeholder = '';
       this.itemQuantityRef.current.classList.remove('is-invalid');
       this.itemQuantityRef.current.placeholder = '';
+      this.ingredientsRef.current.classList.remove('is-invalid');
+      this.ingredientsRef.current.placeholder = '';
       newItem[name] = value;
     }
     this.setState({ newItem });
@@ -118,17 +123,22 @@ class MenuListComponent extends Component {
     let isValid = true;
     if(!this.itemNameRef.current.defaultValue) {
       this.itemNameRef.current.classList.add('is-invalid');
-      this.itemNameRef.current.placeholder = 'Name must not be empty'
+      this.itemNameRef.current.placeholder = 'Name must not be empty';
       isValid = false;
     }
     if(!this.itemPriceRef.current.defaultValue) {
       this.itemPriceRef.current.classList.add('is-invalid');
-      this.itemPriceRef.current.placeholder = 'Price field must not be empty'
+      this.itemPriceRef.current.placeholder = 'Price field must not be empty';
       isValid = false;
     }
     if(!this.itemQuantityRef.current.defaultValue) {
       this.itemQuantityRef.current.classList.add('is-invalid');
-      this.itemQuantityRef.current.placeholder = 'Quantity field must not be empty'
+      this.itemQuantityRef.current.placeholder = 'Quantity field must not be empty';
+      isValid = false;
+    }
+    if(!this.ingredientsRef.current.defaultValue) {
+      this.ingredientsRef.current.classList.add('is-invalid');
+      this.ingredientsRef.current.placeholder = 'Ingredients field must not be empty';
       isValid = false;
     }
 
@@ -136,21 +146,25 @@ class MenuListComponent extends Component {
   }
 
   removeItem = (itemId) => {
-    this.props.store.deleteMenuItem(this.state.actualMenu.id, itemId);
+    store.deleteMenuItem(this.state.actualMenu.id, itemId);
     this.forceUpdate();
   }
 
-  showModal = (item) => {
-    if(item) {
-      this.setState({ showContentModal: true, newItem: item, isNew: false });
+  showModal = (id) => {
+    if(id) {
+      this.setState({ showContentModal: true, newItem: store.menus.getMenuItemById(this.props.id,id), isNew: false });
     } else {
       this.setState({ showContentModal: true, isNew: true, newItem: {} });
     }
   }
 
+  closeMenuModal() {
+    const actualMenu = store.menus.getMenuById(this.props.id);
+    this.setState({ actualMenu, showEdit: false });
+  }
+
   render() {
-    const { store, id } = this.props;
-    console.log('list',store.menus)
+    const { id } = this.props;
 
     if (this.state.navigate) {
       return <Redirect to="/" push={true} />
@@ -161,7 +175,7 @@ class MenuListComponent extends Component {
         <Container>
           <Row>
             <Col xs={10} className="menu-description">
-              {this.state.actualMenu.description}
+              {store.menus.getMenuById(this.props.id).description}
             </Col>
             <Col>
               <div className="control-menu">
@@ -195,9 +209,8 @@ class MenuListComponent extends Component {
           <Row>
             <Col xs={10}>
               {store.menus.getMenuById(id)?.itemList.map((menuItem) => {
-                console.log('adsf',menuItem)
                 return (
-                  <MenuItemListComponent store={store} menuId={id} menuItem={menuItem} removeItem={this.removeItem} showModal={this.showModal} />
+                  <MenuItemListComponent menuId={id} menuItemId={menuItem.id} removeItem={this.removeItem} showModal={this.showModal} />
                 );
               })}
             </Col>
@@ -207,6 +220,7 @@ class MenuListComponent extends Component {
         <div>
           <Modal
             show={this.state.showEdit}
+            onHide={() => this.closeMenuModal()}
             centered
             animation={false}
           >
@@ -249,7 +263,7 @@ class MenuListComponent extends Component {
               <Button variant="outline-success" onClick={this.saveChanges}>
                 Save
               </Button>
-              <Button variant="outline-danger" onClick={() => this.setState({ showEdit: false })}>
+              <Button variant="outline-danger" onClick={() => this.closeMenuModal()}>
                 Close
               </Button>
             </Modal.Footer>
@@ -259,12 +273,14 @@ class MenuListComponent extends Component {
         <div>
           <Modal
             show={this.state.showContentModal}
+            onHide={() => this.setState({ showContentModal: false })}
             centered
             animation={false}
           >
             <Modal.Header closeButton>
               <Modal.Title id="contained-modal-title-vcenter">
-                Add Content
+                {this.state.isNew && 'Add Content'}
+                {!this.state.isNew && 'Edit Content'}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -295,20 +311,16 @@ class MenuListComponent extends Component {
                 />
               </div>
 
-              {
-                /*<div className="form-group">
+              <div className="form-group">
                 <label htmlFor="ingredients">Ingredients</label>
-                <Select
-                  className="dropdown"
-                  placeholder="Select Option"
+                <input
+                  className="form-control"
                   value={this.state.newItem.ingredients}
-                  options={ingredientOptions}
-                  onChange={handleContentDetailsChange}
-                  isMulti
-                  isClearable
+                  onChange={this.handleNewItemChange}
+                  name='ingredients'
+                  ref={this.ingredientsRef}
                 />
-              </div>*/
-              }
+              </div>
 
               <div className="form-group">
                 <label htmlFor="quantity">Quantity</label>
@@ -327,7 +339,9 @@ class MenuListComponent extends Component {
               <Button variant="outline-success" onClick={this.saveItemChanges}>
                 Submit
               </Button>
-              <Button variant="outline-danger" onClick={() => this.setState({ showContentModal: false })}>
+              <Button variant="outline-danger" onClick={() => {
+                this.setState({ showContentModal: false, newItem: {} })
+              }}>
                 Close
               </Button>
             </Modal.Footer>
@@ -338,4 +352,4 @@ class MenuListComponent extends Component {
   }
 }
 
-export default observer(({store, id}) => <MenuListComponent store={store} id={id} />);
+export default MenuListComponent;

@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import { Button, Modal, Navbar, Nav } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MenuItem from "../store/MenuItem";
 import MenuListComponent from './MenuListComponent';
+import store from '../store/MenuStore';
 
+@observer
 class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -60,12 +62,11 @@ class MainPage extends Component {
       return;
     }
     newMenuObject.itemList = new MenuItem();
-    this.props.store.menus.createMenu(newMenuObject);
+    store.menus.createMenu(newMenuObject);
     this.setState({showAdd: false});
   };
   
   render() {
-    const { store } = this.props;
     return (
       <Router>
         <React.Fragment>
@@ -77,7 +78,7 @@ class MainPage extends Component {
                 <Nav.Link href="/">Home</Nav.Link>
                 {store.menus.list.map((menu) => {
                     return (
-                      <Nav.Link href={menu.name} key={menu.id}>
+                      <Nav.Link href={menu.name.toLowerCase()} key={menu.id}>
                         {menu.name}
                       </Nav.Link>
                     );
@@ -97,7 +98,7 @@ class MainPage extends Component {
             {store.menus.list.map((menu) => {
                 return (
                   <Route path={this.createRouterPath(menu.name)} key={menu.id}>
-                    <MenuListComponent store={store} id={menu.id} />
+                    <MenuListComponent id={menu.id} />
                   </Route>
                 );
               })}
@@ -147,11 +148,10 @@ class MainPage extends Component {
               </Button>
             </Modal.Footer>
           </Modal>
-              <div> Home page</div>
         </React.Fragment>
       </Router>
     );
   }
 }
 
-export default observer(({store}) => <MainPage store={store} />);
+export default MainPage;

@@ -101,3 +101,20 @@ button.close {
   border-bottom: solid 1px black;
   padding: 5px;
 }
+
+.meal-description {
+  float: left;
+  clear: both;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.meal-name {
+  float: left;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.meal-price {
+  float: right;
+}

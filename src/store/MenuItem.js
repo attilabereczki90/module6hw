@@ -1,32 +1,26 @@
-import { action, makeObservable, observable } from 'mobx';
+import { action, observable } from 'mobx';
+import { persist } from 'mobx-persist';
 
 class MenuItem {
-  id = '';
-  name = '';
-  mainIngredients = '';
-  quantity = '';
-  price = '';
+  @persist @observable id = '';
+  @persist @observable name = '';
+  @persist @observable ingredients = '';
+  @persist @observable quantity = '';
+  @persist @observable price = '';
 
-  constructor({id = '', name = '', mainIngredients = '', quantity = '', price = ''}) {
+  constructor({id = '', name = '', ingredients = '', quantity = '', price = ''}) {
     this.id = id;
     this.name = name;
-    this.mainIngredients = mainIngredients;
+    this.ingredients = ingredients;
     this.quantity = quantity;
     this.price = price;
-
-    makeObservable(this, {
-      id: observable,
-      name: observable,
-      mainIngredients: observable,
-      quantity: observable,
-      price: observable,
-      updateMenuItem: action,
-    });
 
     return this;
   }
 
+  @action
   updateMenuItem(menuItem) {
+    console.log('updateMenuItem', menuItem)
     for (const [key, value] of Object.entries(menuItem)) {
       this[key] = value;
     }

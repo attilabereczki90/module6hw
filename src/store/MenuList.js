@@ -3,8 +3,15 @@ import { action, observable } from 'mobx';
 import { persist } from 'mobx-persist';
 import MenuItem from './MenuItem';
 
+class MenuSchema {
+  @persist @observable id = '';
+  @persist @observable name = ''; 
+  @persist @observable description = '';
+  @persist('list') @observable itemList = [];
+}
+
 class MenuList {
-  @persist('list') @observable.deep list = [];
+  @persist('list', MenuSchema) @observable.deep list = [];
 
   @action
   getMenuById(menuId) {
@@ -42,7 +49,7 @@ class MenuList {
     }
   }
 
-  @action('ADD')
+  @action
   addItemToList(menuId, item) {
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if(menuIndexAtId > -1) {
@@ -63,7 +70,9 @@ class MenuList {
   getMenuItemById(menuId, itemId) {
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if(menuIndexAtId > -1) {
-      const itemIndexAtId = this.list[menuIndexAtId].itemList.findIndex((item) => item.id === itemId);
+      const itemIndexAtId = this.list[menuIndexAtId].itemList.findIndex((item) => {
+        return item.id === itemId
+      });
       if(itemIndexAtId > -1) {
         return this.list[menuIndexAtId].itemList[itemIndexAtId];
       }

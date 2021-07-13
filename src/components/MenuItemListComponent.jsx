@@ -32,13 +32,13 @@ class MenuItemListComponent extends Component {
       <React.Fragment>
         <Container className={'content'}>
           <Row>
-            <Col xs={10} key={`${this.state.actualItem.id}-box`}>
+            <Col xs={10} key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).id}-box`}>
               <div>
-                <span key={`${this.state.actualItem.name}-span`} className={'meal-name'}>{this.state.actualItem.name}</span>
-                <span key={`${this.state.actualItem.price}-span`} className={'meal-price'}>{this.state.actualItem.price}</span>
+                <span key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).name}-span`} className={'meal-name'}>{store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).name}</span>
+                <span key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).price}-span`} className={'meal-price'}>{store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).price}</span>
               </div>
-              <div key={`${this.state.actualItem.id}-text`} className={'meal-description'}>
-                {this.state.actualItem.ingredients} / Quantity: {this.state.actualItem.quantity}
+              <div key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).id}-text`} className={'meal-description'}>
+                {store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).ingredients} / Quantity: {store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).quantity}
               </div>
             </Col>
             <Col>

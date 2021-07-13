@@ -31,13 +31,18 @@ class MenuStore {
   @action
   addMenuItem(menuId, menuItem) {
     const item = new MenuItem(menuItem);
-    persist(item);
     this.menus.addItemToList(menuId,item);
   }
 
   @action
   updateMenuItem(menuId, menuItem) {
-    this.menus.getMenuItemById(menuId, menuItem)?.updateMenuItem(menuItem);
+    this.menus.getMenuById(menuId).itemList.forEach((item) => {
+      if(item.id === menuItem.id) {
+        for (const [key, value] of Object.entries(menuItem)) {
+          item[key] = value;
+        }
+      }
+    });
   }
 
   @action

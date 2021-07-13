@@ -6,6 +6,7 @@ import MenuList from "./MenuList";
 import MenuItem from "./MenuItem";
 import { create, persist } from "mobx-persist";
 import localForage from "localforage";
+import { generateId } from "../utils";
 
 const hydrate = create({
   storage: localForage,
@@ -16,20 +17,27 @@ class MenuStore {
   @persist('object') @observable menus = new MenuList();
 
   constructor() {
-    this.init();
-    hydrate('menulist', this.menus);
+    hydrate('menulist', this.menus)
+    .then((menus) => {
+      return menus.list.length;
+    })
+    .then((menuListLength) => {
+      if(menuListLength === 0) {
+        this.init()
+      }
+    });
   }
 
   @action
   addMenuItem(menuId, menuItem) {
     const item = new MenuItem(menuItem);
+    persist(item);
     this.menus.addItemToList(menuId,item);
   }
 
   @action
   updateMenuItem(menuId, menuItem) {
-    console.log('store', menuId, menuItem)
-    this.menus.getMenuItemById(menuId, menuItem.id).updateMenuItem(menuItem);
+    this.menus.getMenuItemById(menuId, menuItem)?.updateMenuItem(menuItem);
   }
 
   @action
@@ -39,8 +47,9 @@ class MenuStore {
 
   @action
   init() {
+    let id = generateId();
     this.menus.createMenu({
-      id: "menu-starters",
+      id,
       name: "Starters",
       description: "Prepare your tummy for happy meal",
       itemList: [],
@@ -52,14 +61,15 @@ class MenuStore {
     const onionRings = new MenuItem({id: 'onion-rings-item', name: 'Onion rings house made', ingredients: 'beer battered onion rings served with spicy mayo', quantity: '350g', price: '6.50$' });
     const tomato = new MenuItem({id: 'tomato-chilli-item', name: 'Tomato chilli prawns', ingredients: 'served with crispy bacon and basmati rice', quantity: '350g', price: '12.00$' });
           
-    this.menus.addItemToList("menu-starters",bread);
-    this.menus.addItemToList("menu-starters",bruschetta);
-    this.menus.addItemToList("menu-starters",pulledPork);
-    this.menus.addItemToList("menu-starters",onionRings);
-    this.menus.addItemToList("menu-starters",tomato);
+    this.menus.addItemToList(id,bread);
+    this.menus.addItemToList(id,bruschetta);
+    this.menus.addItemToList(id,pulledPork);
+    this.menus.addItemToList(id,onionRings);
+    this.menus.addItemToList(id,tomato);
 
+    id = generateId();
     this.menus.createMenu({
-      id: "menu-mains",
+      id,
       name: "Mains",
       description: "For full lunch",
       itemList: [],
@@ -69,12 +79,13 @@ class MenuStore {
     const mainatedPork = new MenuItem({id: 'mainated-pork-item', name: 'Marinated pork cutlet', ingredients: 'served with home-made chilli jam', quantity: '350g', price: '23.90$' });
     const slowPork = new MenuItem({id: 'slow-pork-item', name: 'Slow cooked pork ribs', ingredients: 'USA pork rib with a home-made smoky BBQ Bourbon sauce, served with coleslaw and chips', quantity: '350g', price: '27.90$' });
 
-    this.menus.addItemToList("menu-mains",grilledChicken);
-    this.menus.addItemToList("menu-mains",mainatedPork);
-    this.menus.addItemToList("menu-mains",slowPork);
+    this.menus.addItemToList(id,grilledChicken);
+    this.menus.addItemToList(id,mainatedPork);
+    this.menus.addItemToList(id,slowPork);
 
+    id = generateId();
     this.menus.createMenu({
-      id: "menu-vegetarian",
+      id,
       name: "Vegetarian",
       description: "If you like animals",
       itemList: [],
@@ -85,10 +96,10 @@ class MenuStore {
     const pumpkin = new MenuItem({id: 'pumpkin-and-spinach-item', name: 'Pumpkin and spinach risotto', ingredients: 'arborio rice, cream & parmesan', quantity: '350g', price: '17.90$' });
     const cabbageLeaf = new MenuItem({id: 'cabbage-leaf-item', name: 'Cabbage leaf', ingredients: 'filled with seasonal vegetables and walnuts served with potato, carrot, turnip and a cashew based mushroom sauce', quantity: '350g', price: '18.90$' });
 
-    this.menus.addItemToList("menu-vegetarian",thaiCurry);
-    this.menus.addItemToList("menu-vegetarian",fettuccine);
-    this.menus.addItemToList("menu-vegetarian",pumpkin);
-    this.menus.addItemToList("menu-vegetarian",cabbageLeaf);
+    this.menus.addItemToList(id,thaiCurry);
+    this.menus.addItemToList(id,fettuccine);
+    this.menus.addItemToList(id,pumpkin);
+    this.menus.addItemToList(id,cabbageLeaf);
   }
 }
 

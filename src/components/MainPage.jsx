@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { Button, Modal, Navbar, Nav } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import MenuItem from "../store/MenuItem";
 import MenuListComponent from './MenuListComponent';
 import store from '../store/MenuStore';
+import { generateId } from "../utils";
 
 @observer
 class MainPage extends Component {
@@ -12,7 +12,11 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
-      newMenuObject: {},
+      newMenuObject: {
+        id: '',
+        name: '',
+        description: '',
+      },
       showAdd: false,
       selectedTab: 'home',
     }
@@ -29,7 +33,7 @@ class MainPage extends Component {
     if (name === 'name') {
       this.nameInputRef.current.classList.remove('is-invalid');
       this.nameInputRef.current.placeholder = ''
-      newMenuObject.id = value.toLowerCase().replace(/ /g, '-');
+      newMenuObject.id = generateId();
       newMenuObject.name = value;
     } else {
       this.descInputRef.current.classList.remove('is-invalid');
@@ -49,7 +53,7 @@ class MainPage extends Component {
   };
   
   saveMenu = () => {
-    const { newMenuObject } = this.state;
+    let { newMenuObject } = this.state;
     
     if(!this.nameInputRef.current.defaultValue) {
       this.nameInputRef.current.classList.add('is-invalid');
@@ -61,9 +65,14 @@ class MainPage extends Component {
       this.descInputRef.current.placeholder = 'Description must not be empty'
       return;
     }
-    newMenuObject.itemList = new MenuItem();
+    newMenuObject.itemList = [];
     store.menus.createMenu(newMenuObject);
-    this.setState({showAdd: false});
+    newMenuObject = {
+      id: '',
+      name: '',
+      description: '',
+    };
+    this.setState({showAdd: false, newMenuObject});
   };
   
   render() {
@@ -78,7 +87,7 @@ class MainPage extends Component {
                 <Nav.Link href="/">Home</Nav.Link>
                 {store.menus.list.map((menu) => {
                     return (
-                      <Nav.Link href={menu.name.toLowerCase()} key={menu.id}>
+                      <Nav.Link href={menu.id} key={menu.id}>
                         {menu.name}
                       </Nav.Link>
                     );
@@ -97,7 +106,7 @@ class MainPage extends Component {
           <Switch>
             {store.menus.list.map((menu) => {
                 return (
-                  <Route path={this.createRouterPath(menu.name)} key={menu.id}>
+                  <Route path={this.createRouterPath(menu.id)} key={menu.id}>
                     <MenuListComponent id={menu.id} />
                   </Route>
                 );
@@ -105,7 +114,7 @@ class MainPage extends Component {
           </Switch>
           <Modal show={this.state.showAdd} onHide={this.closeAddMenu} centered animation={false}>
             <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
+              <Modal.Title id="contained-add-modal-title-vcenter">
                 Add Menu
               </Modal.Title>
             </Modal.Header>
@@ -115,7 +124,7 @@ class MainPage extends Component {
                 <input
                   type="text"
                   className="form-control"
-                  id="name"
+                  id="add-menu-name"
                   required
                   value={this.state.newMenuObject.name}
                   onChange={this.handleInputChange}
@@ -130,7 +139,7 @@ class MainPage extends Component {
                   rows="10"
                   cols="100"
                   className="form-control"
-                  id="description"
+                  id="add-menu-description"
                   required
                   value={this.state.newMenuObject.description}
                   onChange={this.handleInputChange}

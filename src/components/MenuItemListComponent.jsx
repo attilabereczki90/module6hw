@@ -17,44 +17,47 @@ class MenuItemListComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.actualItem = store.menus.getMenuItemById(props.menuId, props.menuItemId);
+    this.state = {
+      actualItem: {
+        name: store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).name,
+        ingredients: store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).ingredients,
+        quantity: store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).quantity,
+        price: store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).price,
+      }
+    }
   }
 
   render() {
-    const actualItem = store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId);
-    console.log('actualitem',this.actualItem)
-    console.log('storeitem',store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId))
-    console.log('cloneditem', Object.assign({}, store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId)))
     return (
       <React.Fragment>
         <Container className={'content'}>
           <Row>
-            <Col xs={10}>
+            <Col xs={10} key={`${this.state.actualItem.id}-box`}>
               <div>
-                <span className={'meal-name'}>{actualItem.name}</span>
-                <span className={'meal-price'}>{actualItem.price}</span>
+                <span key={`${this.state.actualItem.name}-span`} className={'meal-name'}>{this.state.actualItem.name}</span>
+                <span key={`${this.state.actualItem.price}-span`} className={'meal-price'}>{this.state.actualItem.price}</span>
               </div>
-              <div  className={'meal-description'}>
-                {actualItem.ingredients} / Quantity: {actualItem.quantity}
+              <div key={`${this.state.actualItem.id}-text`} className={'meal-description'}>
+                {this.state.actualItem.ingredients} / Quantity: {this.state.actualItem.quantity}
               </div>
             </Col>
             <Col>
             <div className="content-menu">
               <OverlayTrigger
-                key={`bottom-${actualItem.id}-edit`}
+                key={`bottom-${this.props.menuItemId}-edit`}
                 placement="bottom"
-                overlay={<Tooltip id={`tooltip-bottom`}>Edit Content</Tooltip>}
+                overlay={<Tooltip id={`tooltip-bottom-${this.props.menuItemId}-edit`} key={`tooltip-bottom-${this.props.menuItemId}-edit`} >Edit Content</Tooltip>}
               >
-                <BsPencil onClick={() => this.props.showModal(actualItem.id)} />
+                <BsPencil onClick={() => this.props.showModal(this.props.menuItemId)} />
               </OverlayTrigger>
               <OverlayTrigger
-                key={`bottom-${actualItem.id}-remove`}
+                key={`bottom-${this.props.menuItemId}-remove`}
                 placement="bottom"
                 overlay={
-                  <Tooltip id={`tooltip-bottom`}>Remove Content</Tooltip>
+                  <Tooltip id={`tooltip-bottom-${this.props.menuItemId}-remove`} key={`tooltip-bottom-${this.props.menuItemId}-remove`}>Remove Content</Tooltip>
                 }
               >
-                <BsFillTrashFill onClick={() => this.props.removeItem(actualItem.id)} />
+                <BsFillTrashFill onClick={() => this.props.removeItem(this.props.menuItemId)} />
               </OverlayTrigger>
             </div>
           </Col>

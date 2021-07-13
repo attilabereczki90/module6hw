@@ -4,7 +4,7 @@ import { persist } from 'mobx-persist';
 import MenuItem from './MenuItem';
 
 class MenuList {
-  @persist('list') @observable list = [];
+  @persist('list') @observable.deep list = [];
 
   @action
   getMenuById(menuId) {
@@ -42,7 +42,7 @@ class MenuList {
     }
   }
 
-  @action
+  @action('ADD')
   addItemToList(menuId, item) {
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if(menuIndexAtId > -1) {

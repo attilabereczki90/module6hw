@@ -46,7 +46,8 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "react-select": "^4.3.1"
+    "react-select": "^4.3.1",
+    "serializr": "^1.5.4"
   },
   "scripts": {
     "start": "webpack-dev-server --hot --open",

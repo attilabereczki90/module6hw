@@ -18,6 +18,7 @@ import { Redirect } from 'react-router';
 import MenuItemListComponent from "./MenuItemListComponent";
 import store from '../store/MenuStore';
 import { generateId } from "../utils";
+import AddEditItem from "./modals/AddEditItem";
 
 @observer
 class MenuListComponent extends Component {
@@ -95,77 +96,17 @@ class MenuListComponent extends Component {
     this.setState({showEdit: false});
   };
 
-  saveItemChanges = () => {
+  saveItemChanges = (item) => {
     const { isNew } = this.state;
-    let item = this.state.newItem;
-    
-    if(!this.validateInputFields()) {
-      return;
-    }
     
     if(isNew) {
       store.addMenuItem(this.props.id, item);
     } else {
       store.updateMenuItem(this.props.id, item);
     }
-    item = {
-      id: '',
-      name: '',
-      ingredients: '',
-      quantity: '',
-      price: '',
-    }
     
-    this.setState({showContentModal: false, newItem: item});
+    this.setState({showContentModal: false});
   };
-
-  handleNewItemChange = (event) => {
-    const { newItem } = this.state;
-    const { name, value } = event.target;
-    if (name === 'name') {
-      this.itemNameRef.current.classList.remove('is-invalid');
-      this.itemNameRef.current.placeholder = '';
-      if(!newItem.id) {
-        newItem.id = generateId();;
-      }
-      newItem.name = value;
-    } else {
-      this.itemPriceRef.current.classList.remove('is-invalid');
-      this.itemPriceRef.current.placeholder = '';
-      this.itemQuantityRef.current.classList.remove('is-invalid');
-      this.itemQuantityRef.current.placeholder = '';
-      this.ingredientsRef.current.classList.remove('is-invalid');
-      this.ingredientsRef.current.placeholder = '';
-      newItem[name] = value;
-    }
-    this.setState({ newItem });
-  }
-
-  validateInputFields = () => {
-    let isValid = true;
-    if(!this.itemNameRef.current.value) {
-      this.itemNameRef.current.classList.add('is-invalid');
-      this.itemNameRef.current.placeholder = 'Meal name is required';
-      isValid = false;
-    }
-    if(!this.itemPriceRef.current.value) {
-      this.itemPriceRef.current.classList.add('is-invalid');
-      this.itemPriceRef.current.placeholder = 'Meal price is required';
-      isValid = false;
-    }
-    if(!this.itemQuantityRef.current.value) {
-      this.itemQuantityRef.current.classList.add('is-invalid');
-      this.itemQuantityRef.current.placeholder = 'Quantity of the meal is required';
-      isValid = false;
-    }
-    if(!this.ingredientsRef.current.value) {
-      this.ingredientsRef.current.classList.add('is-invalid');
-      this.ingredientsRef.current.placeholder = 'Please provide ingredients';
-      isValid = false;
-    }
-
-    return isValid;
-  }
 
   removeItem = (itemId) => {
     store.deleteMenuItem(this.props.id, itemId);
@@ -210,20 +151,12 @@ class MenuListComponent extends Component {
     this.setState({ actualMenu, showEdit: true });
   }
 
-  closeMenuItemModal() {
-    const item = {
-      id: '',
-      name: '',
-      ingredients: '',
-      quantity: '',
-      price: '',
-    };
-    this.setState({ showContentModal: false, isNew: false, newItem: item });
+  closeMenuItemModal = () => {
+    this.setState({ showContentModal: false, isNew: false });
   }
 
   render() {
     const { id } = this.props;
-    const { newItem } = this.state;
 
     if (this.state.navigate) {
       return <Redirect to="/" push={true} />
@@ -329,6 +262,9 @@ class MenuListComponent extends Component {
           </Modal>
         </div>
 
+        <AddEditItem showContentModal={this.state.showContentModal} isNew={this.state.isNew} closeMenuItemModal={this.closeMenuItemModal} saveItemChanges={this.saveItemChanges} />
+
+        {/*
         <div>
           <Modal
             show={this.state.showContentModal}
@@ -402,6 +338,7 @@ class MenuListComponent extends Component {
             </Modal.Footer>
           </Modal>
         </div>
+        */}
       </React.Fragment>
     );
   }

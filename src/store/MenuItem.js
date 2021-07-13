@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { observable } from 'mobx';
 import { persist } from 'mobx-persist';
 import { generateId } from '../utils';
 
@@ -15,13 +15,6 @@ class MenuItem {
     this.ingredients = ingredients;
     this.quantity = quantity;
     this.price = price;
-  }
-
-  @action
-  updateMenuItem(menuItem) {
-    for (const [key, value] of Object.entries(menuItem)) {
-      this[key] = value;
-    }
   }
 }
 

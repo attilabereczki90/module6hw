@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import { Button, Modal, Navbar, Nav } from "react-bootstrap";
+import { Button, Navbar, Nav } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MenuListComponent from './MenuListComponent';
 import store from '../store/MenuStore';
-import { generateId } from "../utils";
+import EditMenuModal from "./modals/EditMenuModal";
 
 @observer
 class MainPage extends Component {
@@ -12,74 +12,58 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
-      newMenuObject: {
-        id: '',
-        name: '',
-        description: '',
+      showAddMenu: {
+        menu: {
+          id: '',
+          name: '',
+          description: '',
+        },
+        show: false,
       },
-      showAdd: false,
       selectedTab: 'home',
     }
-    this.nameInputRef = React.createRef();
-    this.descInputRef = React.createRef();
   }
   createRouterPath = (routerName) => {
     return `/${routerName}`;
   };
 
-  handleInputChange = (event) => {
-    const { newMenuObject } = this.state;
-    const { name, value } = event.target;
-    if (name === 'name') {
-      this.nameInputRef.current.classList.remove('is-invalid');
-      this.nameInputRef.current.placeholder = ''
-      newMenuObject.id = generateId();
-      newMenuObject.name = value;
-    } else {
-      this.descInputRef.current.classList.remove('is-invalid');
-      this.descInputRef.current.placeholder = ''
-      newMenuObject[name] = value;
-    }
-    this.setState({newMenuObject});
-  };
+  showAddMenu = () => {
+    const { showAddMenu } = this.state;
+    showAddMenu.show = true;
+    this.setState({showAddMenu});
+  }
   
   closeAddMenu = () => {
-    this.resetFields();
-    this.setState({showAdd: false});
-  };
-
-  resetFields = () => {
-    this.setState({newMenuObject: {}});
+    const showAddMenu = {
+      menu: {
+        id: '',
+        name: '',
+        description: '',
+      },
+      show: false,
+    };
+    this.setState({showAddMenu});
   };
   
-  saveMenu = () => {
-    let { newMenuObject } = this.state;
-    
-    if(!this.nameInputRef.current.defaultValue) {
-      this.nameInputRef.current.classList.add('is-invalid');
-      this.nameInputRef.current.placeholder = 'Name must not be empty'
-      return;
-    }
-    if(!this.descInputRef.current.defaultValue) {
-      this.descInputRef.current.classList.add('is-invalid');
-      this.descInputRef.current.placeholder = 'Description must not be empty'
-      return;
-    }
-    newMenuObject.itemList = [];
-    store.menus.createMenu(newMenuObject);
-    newMenuObject = {
-      id: '',
-      name: '',
-      description: '',
+  saveMenu = (menu) => {
+    menu.itemList = [];
+    store.menus.createMenu(menu);
+    const showAddMenu = {
+      menu: {
+        id: '',
+        name: '',
+        description: '',
+      },
+      show: false,
     };
-    this.setState({showAdd: false, newMenuObject});
+    this.setState({showAddMenu});
   };
   
   render() {
     return (
       <Router>
         <React.Fragment>
-          <h1>Restaurant Menu List</h1>
+          <h1>Restaurant Menu Application</h1>
           <Navbar bg="light" expand="lg">
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
@@ -94,7 +78,7 @@ class MainPage extends Component {
                   })}
               </Nav>
               <div className="add-menu">
-                <Button variant="dark" onClick={() => this.setState({showAdd: true})}>
+                <Button variant="dark" onClick={() => this.showAddMenu()}>
                   Add Menu
                 </Button>
               </div>
@@ -112,51 +96,10 @@ class MainPage extends Component {
                 );
               })}
           </Switch>
-          <Modal show={this.state.showAdd} onHide={this.closeAddMenu} centered animation={false}>
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-add-modal-title-vcenter">
-                Add Menu
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-group">
-                <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="add-menu-name"
-                  required
-                  value={this.state.newMenuObject.name}
-                  onChange={this.handleInputChange}
-                  name="name"
-                  ref={this.nameInputRef}
-                />
-              </div>
-  
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  rows="10"
-                  cols="100"
-                  className="form-control"
-                  id="add-menu-description"
-                  required
-                  value={this.state.newMenuObject.description}
-                  onChange={this.handleInputChange}
-                  name="description"
-                  ref={this.descInputRef}
-                />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-success" onClick={this.saveMenu}>
-                Add
-              </Button>
-              <Button variant="outline-danger" onClick={this.closeAddMenu}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
+
+          <EditMenuModal showEditMenu={this.state.showAddMenu} isNew={false} closeMenuModal={this.closeAddMenu} saveChanges={this.saveMenu} />
+
+          <span>Welcome to our Restaurant menu application, create your own menus and fill it with delicious dishes!</span>
         </React.Fragment>
       </Router>
     );

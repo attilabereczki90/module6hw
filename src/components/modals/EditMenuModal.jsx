@@ -89,7 +89,8 @@ class EditMenuModal extends Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Edit Menu
+            {this.props.isNew && 'Add Menu'}
+            {!this.props.isNew && 'Edit Menu'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -124,7 +125,8 @@ class EditMenuModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-success" onClick={() => this.saveChanges()}>
-            Save
+            {this.props.isNew && 'Add'}
+            {!this.props.isNew && 'Save'}
           </Button>
           <Button variant="outline-danger" onClick={() => this.closeModal()}>
             Close

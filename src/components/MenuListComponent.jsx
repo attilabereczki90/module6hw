@@ -228,7 +228,7 @@ class MenuListComponent extends Component {
           </Row>
         </Container>
 
-        <EditMenuModal menuId={this.props.id} showEditMenu={this.state.showEditMenu} closeMenuModal={this.closeMenuModal} saveChanges={this.saveChanges} />
+        <EditMenuModal showEditMenu={this.state.showEditMenu} isNew={false} closeMenuModal={this.closeMenuModal} saveChanges={this.saveChanges} />
 
         <EditDishesModal menuId={this.props.id} showEditDishesModal={this.state.showEditDishesModal} isNew={this.state.isNew} closeEditDishesModal={this.closeEditDishesModal} saveDetailsChange={this.saveDetailsChange} />
 

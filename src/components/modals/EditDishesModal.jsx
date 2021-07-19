@@ -109,8 +109,8 @@ class EditDishesModal extends Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {this.props.isNew && 'Add New Dish'}
-            {!this.props.isNew && 'Edit Existing Dish'}
+            {this.props.isNew && 'Add Dish'}
+            {!this.props.isNew && 'Edit Dish'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -165,7 +165,8 @@ class EditDishesModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-success" onClick={() => this.saveChanges()}>
-            Save
+            {this.props.isNew && 'Add'}
+            {!this.props.isNew && 'Save'}
           </Button>
           <Button variant="outline-danger" onClick={() => this.closeModal()}>
             Close

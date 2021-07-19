@@ -150,7 +150,7 @@ class MainPage extends Component {
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline-success" onClick={this.saveMenu}>
-                Submit
+                Add
               </Button>
               <Button variant="outline-danger" onClick={this.closeAddMenu}>
                 Close

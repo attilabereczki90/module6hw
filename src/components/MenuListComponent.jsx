@@ -19,6 +19,7 @@ import MenuItemListComponent from "./MenuItemListComponent";
 import store from '../store/MenuStore';
 import { generateId } from "../utils";
 import EditDishesModal from "./modals/EditDishesModal";
+import EditMenuModal from "./modals/EditMenuModal";
 
 @observer
 class MenuListComponent extends Component {
@@ -27,11 +28,13 @@ class MenuListComponent extends Component {
     super(props);
 
     this.state = {
-      showEdit: false,
-      actualMenu: {
-        id: '',
-        name: '',
-        description: '',
+      showEditMenu: {
+        menu: {
+          id: '',
+          name: '',
+          description: '',
+        },
+        show: false,
       },
       showEditDishesModal: {
         item: {
@@ -57,45 +60,28 @@ class MenuListComponent extends Component {
   }
 
   removeCurrentMenu = () => {
-    this.setState({actualMenu: {}, navigate: true }, () => {
+    const showEditMenu = {
+      menu: {
+        id: '',
+        name: '',
+        description: '',
+      },
+      show: false,
+    };
+    this.setState({showEditMenu, navigate: true }, () => {
       store.menus.deleteMenu(this.props.id);
     });
   }
-
-  handleMenuDetailsChange = (event) => {
-    const { actualMenu } = this.state;
-    const { name, value } = event.target;
-    if (name === 'name') {
-      this.nameInputRef.current.classList.remove('is-invalid');
-      this.nameInputRef.current.placeholder = ''
-      if(!actualMenu.id) {
-        actualMenu.id = generateId();
-      }
-      actualMenu.name = value;
-    } else {
-      this.descInputRef.current.classList.remove('is-invalid');
-      this.descInputRef.current.placeholder = ''
-      actualMenu[name] = value;
-    }
-    this.setState({actualMenu});
-  };
   
-  saveChanges = () => {
-    const { actualMenu } = this.state;
-    
-    if(!this.nameInputRef.current.value) {
-      this.nameInputRef.current.classList.add('is-invalid');
-      this.nameInputRef.current.placeholder = 'Name must not be empty'
-      return;
+  saveChanges = (menu) => {
+    store.menus.updateMenu(menu.id, 'name', menu.name);
+    store.menus.updateMenu(menu.id, 'description', menu.description);
+
+    const showEditMenu = {
+      menu,
+      show: false,
     }
-    if(!this.descInputRef.current.value) {
-      this.descInputRef.current.classList.add('is-invalid');
-      this.descInputRef.current.placeholder = 'Description must not be empty'
-      return;
-    }
-    store.menus.updateMenu(actualMenu.id, 'name', actualMenu.name);
-    store.menus.updateMenu(actualMenu.id, 'description', actualMenu.description);
-    this.setState({showEdit: false});
+    this.setState({showEditMenu});
   };
 
   saveDetailsChange = (item) => {
@@ -152,18 +138,25 @@ class MenuListComponent extends Component {
     }
   }
 
-  closeMenuModal() {
-    this.setState({ actualMenu: store.menus.getMenuById(this.props.id), showEdit: false });
+  closeMenuModal = () => {
+    const showEditMenu = {
+      menu: store.menus.getMenuById(this.props.id),
+      show: false,
+    };
+    this.setState({ showEditMenu });
   }
 
   openMenuModal() {
     const menu = store.menus.getMenuById(this.props.id);
-    const actualMenu = {
-      id: this.props.id,
-      name: menu.name,
-      description: menu.description,
+    const showEditMenu = {
+      menu: {
+        id: this.props.id,
+        name: menu.name,
+        description: menu.description,
+      },
+      show: true,
     };
-    this.setState({ actualMenu, showEdit: true });
+    this.setState({ showEditMenu });
   }
 
   closeEditDishesModal = () => {
@@ -235,58 +228,7 @@ class MenuListComponent extends Component {
           </Row>
         </Container>
 
-        <div>
-          <Modal
-            show={this.state.showEdit}
-            onHide={() => this.closeMenuModal()}
-            centered
-            animation={false}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                Edit Menu
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-group">
-                <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="menu-modal-name"
-                  required
-                  value={this.state.actualMenu.name}
-                  onChange={this.handleMenuDetailsChange}
-                  name="name"
-                  ref={this.nameInputRef}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  rows="10"
-                  cols="100"
-                  className="form-control"
-                  id="menu-modal-description"
-                  required
-                  value={this.state.actualMenu.description}
-                  onChange={this.handleMenuDetailsChange}
-                  name="description"
-                  ref={this.descInputRef}
-                />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-success" onClick={this.saveChanges}>
-                Save
-              </Button>
-              <Button variant="outline-danger" onClick={() => this.closeMenuModal()}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
+        <EditMenuModal menuId={this.props.id} showEditMenu={this.state.showEditMenu} closeMenuModal={this.closeMenuModal} saveChanges={this.saveChanges} />
 
         <EditDishesModal menuId={this.props.id} showEditDishesModal={this.state.showEditDishesModal} isNew={this.state.isNew} closeEditDishesModal={this.closeEditDishesModal} saveDetailsChange={this.saveDetailsChange} />
 

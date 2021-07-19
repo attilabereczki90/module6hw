@@ -165,7 +165,7 @@ class EditDishesModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-success" onClick={() => this.saveChanges()}>
-            Submit
+            Save
           </Button>
           <Button variant="outline-danger" onClick={() => this.closeModal()}>
             Close

@@ -68,6 +68,7 @@ class MenuList {
 
   @action
   getMenuItemById(menuId, itemId) {
+    let menuItem = new MenuItem();
     const menuIndexAtId = this.list.findIndex((menu) => menu.id === menuId);
     if(menuIndexAtId > -1) {
       const itemIndexAtId = this.list[menuIndexAtId].itemList.findIndex((item) => {
@@ -77,7 +78,7 @@ class MenuList {
         return this.list[menuIndexAtId].itemList[itemIndexAtId];
       }
     }
-    return;
+    return menuItem;
   }
 
 }

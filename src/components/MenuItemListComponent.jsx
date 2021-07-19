@@ -32,12 +32,12 @@ class MenuItemListComponent extends Component {
       <React.Fragment>
         <Container className={'content'}>
           <Row>
-            <Col xs={10} key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).id}-box`}>
+            <Col xs={10} key={`${this.props.menuItemId}-box`}>
               <div>
                 <span key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).name}-span`} className={'meal-name'}>{store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).name}</span>
                 <span key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).price}-span`} className={'meal-price'}>{store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).price}</span>
               </div>
-              <div key={`${store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).id}-text`} className={'meal-description'}>
+              <div key={`${this.props.menuItemId}-text`} className={'meal-description'}>
                 {store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).ingredients} / Quantity: {store.menus.getMenuItemById(this.props.menuId, this.props.menuItemId).quantity}
               </div>
             </Col>
@@ -46,7 +46,7 @@ class MenuItemListComponent extends Component {
               <OverlayTrigger
                 key={`bottom-${this.props.menuItemId}-edit`}
                 placement="bottom"
-                overlay={<Tooltip id={`tooltip-bottom-${this.props.menuItemId}-edit`} key={`tooltip-bottom-${this.props.menuItemId}-edit`} >Edit Content</Tooltip>}
+                overlay={<Tooltip id={`tooltip-bottom-${this.props.menuItemId}-edit`} key={`tooltip-bottom-${this.props.menuItemId}-edit`} >Edit Dish</Tooltip>}
               >
                 <BsPencil onClick={() => this.props.showModal(this.props.menuItemId)} />
               </OverlayTrigger>
@@ -54,7 +54,7 @@ class MenuItemListComponent extends Component {
                 key={`bottom-${this.props.menuItemId}-remove`}
                 placement="bottom"
                 overlay={
-                  <Tooltip id={`tooltip-bottom-${this.props.menuItemId}-remove`} key={`tooltip-bottom-${this.props.menuItemId}-remove`}>Remove Content</Tooltip>
+                  <Tooltip id={`tooltip-bottom-${this.props.menuItemId}-remove`} key={`tooltip-bottom-${this.props.menuItemId}-remove`}>Remove Dish</Tooltip>
                 }
               >
                 <BsFillTrashFill onClick={() => this.props.removeItem(this.props.menuItemId)} />

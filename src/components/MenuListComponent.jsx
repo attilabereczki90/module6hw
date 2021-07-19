@@ -18,7 +18,7 @@ import { Redirect } from 'react-router';
 import MenuItemListComponent from "./MenuItemListComponent";
 import store from '../store/MenuStore';
 import { generateId } from "../utils";
-import AddEditItem from "./modals/AddEditItem";
+import EditDishesModal from "./modals/EditDishesModal";
 
 @observer
 class MenuListComponent extends Component {
@@ -33,13 +33,15 @@ class MenuListComponent extends Component {
         name: '',
         description: '',
       },
-      showContentModal: false,
-      newItem: {
-        id: '',
-        name: '',
-        ingredients: '',
-        quantity: '',
-        price: '',
+      showEditDishesModal: {
+        item: {
+          id: '',
+          name: '',
+          ingredients: '',
+          quantity: '',
+          price: '',
+        },
+        show: false,
       },
       navigate: false,
       isNew: false,
@@ -96,7 +98,7 @@ class MenuListComponent extends Component {
     this.setState({showEdit: false});
   };
 
-  saveItemChanges = (item) => {
+  saveDetailsChange = (item) => {
     const { isNew } = this.state;
     
     if(isNew) {
@@ -104,8 +106,19 @@ class MenuListComponent extends Component {
     } else {
       store.updateMenuItem(this.props.id, item);
     }
+
+    const showEditDishesModal = {
+      item: {
+        id: '',
+        name: '',
+        ingredients: '',
+        quantity: '',
+        price: '',
+      }, 
+      show: false
+    };
     
-    this.setState({showContentModal: false});
+    this.setState({ showEditDishesModal });
   };
 
   removeItem = (itemId) => {
@@ -116,15 +129,13 @@ class MenuListComponent extends Component {
     let item = {};
     if(id) {
       item = store.menus.getMenuItemById(this.props.id,id);
-      const actualItem = {
-        id,
-        name: item.name,
-        ingredients: item.ingredients,
-        quantity: item.quantity,
-        price: item.price,
+
+      const showEditDishesModal = {
+        item,
+        show: true,
       };
 
-      this.setState({ showContentModal: true, isNew: false, newItem: actualItem });
+      this.setState({ showEditDishesModal, isNew: false });
     } else {
       item = {
         id: '',
@@ -133,7 +144,11 @@ class MenuListComponent extends Component {
         quantity: '',
         price: '',
       };
-      this.setState({ showContentModal: true, isNew: true, newItem: item });
+      const showEditDishesModal = {
+        item, 
+        show: true
+      };
+      this.setState({ showEditDishesModal, isNew: true });
     }
   }
 
@@ -151,8 +166,19 @@ class MenuListComponent extends Component {
     this.setState({ actualMenu, showEdit: true });
   }
 
-  closeMenuItemModal = () => {
-    this.setState({ showContentModal: false, isNew: false });
+  closeEditDishesModal = () => {
+    const item = {
+      id: '',
+      name: '',
+      ingredients: '',
+      quantity: '',
+      price: '',
+    };
+    const showEditDishesModal = {
+      item,
+      show: false
+    };
+    this.setState({ showEditDishesModal, isNew: false });
   }
 
   render() {
@@ -188,7 +214,7 @@ class MenuListComponent extends Component {
                 <OverlayTrigger
                   key={`bottom-${id}-addcontent`}
                   placement="bottom"
-                  overlay={<Tooltip id={`tooltip-bottom-menu-${id}-add-content`}>Add Content</Tooltip>}
+                  overlay={<Tooltip id={`tooltip-bottom-menu-${id}-add-content`}>Add Dish</Tooltip>}
                 >
                   <BsFillPlusSquareFill onClick={() => this.showModal()} />
                 </OverlayTrigger>
@@ -262,83 +288,8 @@ class MenuListComponent extends Component {
           </Modal>
         </div>
 
-        <AddEditItem showContentModal={this.state.showContentModal} isNew={this.state.isNew} closeMenuItemModal={this.closeMenuItemModal} saveItemChanges={this.saveItemChanges} />
+        <EditDishesModal menuId={this.props.id} showEditDishesModal={this.state.showEditDishesModal} isNew={this.state.isNew} closeEditDishesModal={this.closeEditDishesModal} saveDetailsChange={this.saveDetailsChange} />
 
-        {/*
-        <div>
-          <Modal
-            show={this.state.showContentModal}
-            onHide={() => this.closeMenuItemModal()}
-            centered
-            animation={false}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                {this.state.isNew && 'Add Content'}
-                {!this.state.isNew && 'Edit Content'}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-group">
-                <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="menu-item-modal-name"
-                  value={newItem.name}
-                  onChange={this.handleNewItemChange}
-                  name="name"
-                  ref={this.itemNameRef}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="price">Price</label>
-                <input
-                  className="form-control"
-                  id="menu-item-modal-price"
-                  value={newItem.price}
-                  onChange={this.handleNewItemChange}
-                  name="price"
-                  ref={this.itemPriceRef}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="ingredients">Ingredients</label>
-                <input
-                  className="form-control"
-                  id="menu-item-modal-ingredients"
-                  value={newItem.ingredients}
-                  onChange={this.handleNewItemChange}
-                  name='ingredients'
-                  ref={this.ingredientsRef}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="quantity">Quantity</label>
-                <input
-                  className="form-control"
-                  id="menu-item-modal-quantity"
-                  value={newItem.quantity}
-                  onChange={this.handleNewItemChange}
-                  name="quantity"
-                  ref={this.itemQuantityRef}
-                />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-success" onClick={() => this.saveItemChanges()}>
-                Submit
-              </Button>
-              <Button variant="outline-danger" onClick={() => this.closeMenuItemModal()}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-        */}
       </React.Fragment>
     );
   }

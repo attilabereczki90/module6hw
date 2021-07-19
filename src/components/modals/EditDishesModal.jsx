@@ -5,18 +5,13 @@ import {
 } from "react-bootstrap";
 import { generateId } from "../../utils";
 
-class AddEditItem extends Component {
+class EditDishesModal extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      newItem: {
-        name: '',
-        price: '',
-        ingredients: '',
-        quantity: '',
-      },
+      menuItem: this.props.showEditDishesModal.item,
     };
     
     this.itemNameRef = React.createRef();
@@ -25,16 +20,16 @@ class AddEditItem extends Component {
     this.ingredientsRef = React.createRef();
   }
 
-  handleNewItemChange = (event) => {
-    const { newItem } = this.state;
+  handlemenuItemChange = (event) => {
+    const { menuItem } = this.state;
     const { name, value } = event.target;
     if (name === 'name') {
       this.itemNameRef.current.classList.remove('is-invalid');
       this.itemNameRef.current.placeholder = '';
-      if(!newItem.id) {
-        newItem.id = generateId();
+      if(!menuItem.id) {
+        menuItem.id = generateId();
       }
-      newItem.name = value;
+      menuItem.name = value;
     } else {
       this.itemPriceRef.current.classList.remove('is-invalid');
       this.itemPriceRef.current.placeholder = '';
@@ -42,9 +37,9 @@ class AddEditItem extends Component {
       this.itemQuantityRef.current.placeholder = '';
       this.ingredientsRef.current.classList.remove('is-invalid');
       this.ingredientsRef.current.placeholder = '';
-      newItem[name] = value;
+      menuItem[name] = value;
     }
-    this.setState({ newItem });
+    this.setState({ menuItem });
   }
 
   saveChanges = () => {
@@ -52,17 +47,18 @@ class AddEditItem extends Component {
       return;
     }
 
-    this.props.saveItemChanges(this.state.newItem);
+    this.props.saveDetailsChange(this.state.menuItem);
   }
 
   closeModal = () => {
-    this.setState({newItem: {
+    this.setState({menuItem: {
+      id: '',
       name: '',
       price: '',
       ingredients: '',
       quantity: '',
     }}, () => {
-      this.props.closeMenuItemModal();
+      this.props.closeEditDishesModal();
     });
   }
 
@@ -93,19 +89,28 @@ class AddEditItem extends Component {
   }
 
   render() {
-    const { newItem } = this.state;
+    const { menuItem } = this.state;
 
     return (
       <Modal
-        show={this.props.showContentModal}
-        onHide={() => this.props.closeMenuItemModal()}
+        show={this.props.showEditDishesModal.show}
+        onShow={() => {
+          this.setState({ menuItem: {
+            id: this.props.showEditDishesModal.item.id,
+            name: this.props.showEditDishesModal.item.name,
+            price: this.props.showEditDishesModal.item.price,
+            ingredients: this.props.showEditDishesModal.item.ingredients,
+            quantity: this.props.showEditDishesModal.item.quantity,
+          } });
+        }}
+        onHide={() => this.props.closeEditDishesModal()}
         centered
         animation={false}
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {this.props.isNew && 'Add New Content'}
-            {!this.props.isNew && 'Edit Existing Content'}
+            {this.props.isNew && 'Add New Dish'}
+            {!this.props.isNew && 'Edit Existing Dish'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -115,8 +120,8 @@ class AddEditItem extends Component {
               type="text"
               className="form-control"
               id="menu-item-modal-name"
-              value={newItem.name}
-              onChange={this.handleNewItemChange}
+              value={menuItem.name}
+              onChange={this.handlemenuItemChange}
               name="name"
               ref={this.itemNameRef}
             />
@@ -127,8 +132,8 @@ class AddEditItem extends Component {
             <input
               className="form-control"
               id="menu-item-modal-price"
-              value={newItem.price}
-              onChange={this.handleNewItemChange}
+              value={menuItem.price}
+              onChange={this.handlemenuItemChange}
               name="price"
               ref={this.itemPriceRef}
             />
@@ -139,8 +144,8 @@ class AddEditItem extends Component {
             <input
               className="form-control"
               id="menu-item-modal-ingredients"
-              value={newItem.ingredients}
-              onChange={this.handleNewItemChange}
+              value={menuItem.ingredients}
+              onChange={this.handlemenuItemChange}
               name='ingredients'
               ref={this.ingredientsRef}
             />
@@ -151,8 +156,8 @@ class AddEditItem extends Component {
             <input
               className="form-control"
               id="menu-item-modal-quantity"
-              value={newItem.quantity}
-              onChange={this.handleNewItemChange}
+              value={menuItem.quantity}
+              onChange={this.handlemenuItemChange}
               name="quantity"
               ref={this.itemQuantityRef}
             />
@@ -171,4 +176,4 @@ class AddEditItem extends Component {
   }
 }
 
-export default AddEditItem;
+export default EditDishesModal;

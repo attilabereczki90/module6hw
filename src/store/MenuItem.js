@@ -9,12 +9,14 @@ class MenuItem {
   @persist @observable quantity = '';
   @persist @observable price = '';
 
-  constructor({id = generateId(), name = '', ingredients = '', quantity = '', price = ''}) {
-    this.id = id;
-    this.name = name;
-    this.ingredients = ingredients;
-    this.quantity = quantity;
-    this.price = price;
+  constructor(item = {id: generateId(), name: '', ingredients: '', quantity: '', price: ''}) {
+    this.id = item.id;
+    this.name = item.name;
+    this.ingredients = item.ingredients;
+    this.quantity = item.quantity;
+    this.price = item.price;
+
+    return this;
   }
 }
 

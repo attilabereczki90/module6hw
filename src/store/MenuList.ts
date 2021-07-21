@@ -11,7 +11,7 @@ export class MenuSchema {
 }
 
 export default class MenuList {
-  @persist('list', MenuSchema) @observable.deep list : MenuSchema[] = [];
+  @persist('list', MenuSchema) @observable.deep list = observable.array<MenuSchema>([]);
 
   @action
   getMenuById(menuId : string) : MenuSchema | undefined {

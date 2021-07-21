@@ -5,10 +5,12 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MenuListComponent from './MenuListComponent';
 import store from '../store/MenuStore';
 import EditMenuModal from "./modals/EditMenuModal";
+import { MenuSchema } from "../store/MenuList";
+import { IPropsMainPage, IStateMainPage } from "../types";
 
 @observer
-class MainPage extends Component {
-  constructor(props) {
+class MainPage extends Component<IPropsMainPage, IStateMainPage> {
+  constructor(props : IPropsMainPage) {
     super(props);
 
     this.state = {
@@ -22,8 +24,9 @@ class MainPage extends Component {
       },
       selectedTab: 'home',
     }
+    console.log('store',store,store.menus, store.menus['list'])
   }
-  createRouterPath = (routerName) => {
+  createRouterPath = (routerName : string) => {
     return `/${routerName}`;
   };
 
@@ -45,7 +48,7 @@ class MainPage extends Component {
     this.setState({showAddMenu});
   };
   
-  saveMenu = (menu) => {
+  saveMenu = (menu : MenuSchema) => {
     menu.itemList = [];
     store.menus.createMenu(menu);
     const showAddMenu = {
@@ -60,6 +63,9 @@ class MainPage extends Component {
   };
   
   render() {
+    console.log('render store',store)
+    console.log('render menus',store.menus)
+    console.log('render list',store.menus.list)
     return (
       <Router>
         <React.Fragment>
@@ -70,6 +76,7 @@ class MainPage extends Component {
               <Nav className="mr-auto">
                 <Nav.Link href="/">Home</Nav.Link>
                 {store.menus.list.map((menu) => {
+                  console.log('navs',store.menus, store.menus.list)
                     return (
                       <Nav.Link href={menu.id} key={menu.id}>
                         {menu.name}

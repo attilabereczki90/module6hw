@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import {
-  Button,
-  Modal,
   OverlayTrigger,
   Tooltip,
   Container,
@@ -17,14 +15,18 @@ import {
 import { Redirect } from 'react-router';
 import MenuItemListComponent from "./MenuItemListComponent";
 import store from '../store/MenuStore';
-import { generateId } from "../utils";
 import EditDishesModal from "./modals/EditDishesModal";
 import EditMenuModal from "./modals/EditMenuModal";
+import { IPropsMenuListComponent, IStateMenuListComponent, MenuItemInterface, IShowEditDishes, IShowAddMenu } from "../types";
+import { MenuSchema } from "../store/MenuList";
 
 @observer
-class MenuListComponent extends Component {
+class MenuListComponent extends Component<IPropsMenuListComponent, IStateMenuListComponent> {
+
+  private nameInputRef = React.createRef();
+  private descInputRef = React.createRef();
   
-  constructor(props) {
+  constructor(props : IPropsMenuListComponent) {
     super(props);
 
     this.state = {
@@ -49,14 +51,6 @@ class MenuListComponent extends Component {
       navigate: false,
       isNew: false,
     };
-
-    this.nameInputRef = React.createRef()
-    this.descInputRef = React.createRef();
-    
-    this.itemNameRef = React.createRef();
-    this.itemPriceRef = React.createRef();
-    this.itemQuantityRef = React.createRef();
-    this.ingredientsRef = React.createRef();
   }
 
   removeCurrentMenu = () => {
@@ -73,7 +67,7 @@ class MenuListComponent extends Component {
     });
   }
   
-  saveChanges = (menu) => {
+  saveChanges = (menu : MenuSchema) => {
     store.menus.updateMenu(menu.id, 'name', menu.name);
     store.menus.updateMenu(menu.id, 'description', menu.description);
 
@@ -84,7 +78,7 @@ class MenuListComponent extends Component {
     this.setState({showEditMenu});
   };
 
-  saveDetailsChange = (item) => {
+  saveDetailsChange = (item : MenuItemInterface) => {
     const { isNew } = this.state;
     
     if(isNew) {
@@ -107,29 +101,28 @@ class MenuListComponent extends Component {
     this.setState({ showEditDishesModal });
   };
 
-  removeItem = (itemId) => {
+  removeItem = (itemId : string) => {
     store.deleteMenuItem(this.props.id, itemId);
   }
 
-  showModal = (id) => {
-    let item = {};
+  showModal = (id? : string) => {
+    let item : MenuItemInterface = {
+      id: '',
+      name: '',
+      ingredients: '',
+      quantity: '',
+      price: '',
+    };
     if(id) {
       item = store.menus.getMenuItemById(this.props.id,id);
 
-      const showEditDishesModal = {
+      const showEditDishesModal : IShowEditDishes = {
         item,
         show: true,
       };
 
       this.setState({ showEditDishesModal, isNew: false });
     } else {
-      item = {
-        id: '',
-        name: '',
-        ingredients: '',
-        quantity: '',
-        price: '',
-      };
       const showEditDishesModal = {
         item, 
         show: true
@@ -139,7 +132,7 @@ class MenuListComponent extends Component {
   }
 
   closeMenuModal = () => {
-    const showEditMenu = {
+    const showEditMenu : IShowAddMenu = {
       menu: store.menus.getMenuById(this.props.id),
       show: false,
     };
@@ -151,8 +144,8 @@ class MenuListComponent extends Component {
     const showEditMenu = {
       menu: {
         id: this.props.id,
-        name: menu.name,
-        description: menu.description,
+        name: menu?.name,
+        description: menu?.description,
       },
       show: true,
     };
@@ -186,7 +179,7 @@ class MenuListComponent extends Component {
         <Container>
           <Row>
             <Col xs={10} className="menu-description">
-              {store.menus.getMenuById(this.props.id).description}
+              {store.menus.getMenuById(this.props.id)?.description}
             </Col>
             <Col>
               <div className="control-menu">

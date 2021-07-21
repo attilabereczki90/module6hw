@@ -1,52 +1,52 @@
 import {
   observable,
   action,
-} from "mobx";
-import MenuList from "./MenuList";
-import MenuItem from "./MenuItem";
-import { create, persist } from "mobx-persist";
-import localForage from "localforage";
-import { generateId } from "../utils";
+} from 'mobx';
+import MenuList from './MenuList';
+import MenuItem from './MenuItem';
+import { create, persist } from 'mobx-persist';
+import localForage from 'localforage';
+import { generateId } from '../utils';
+import { MenuItemInterface } from '../types';
 
 const hydrate = create({
   storage: localForage,
   jsonify: true,
 });
 
-class MenuStore {
-  @persist('object') @observable menus = new MenuList();
-
+export class MenuStore {
   constructor() {
     hydrate('menulist', this.menus)
-    .then((menus) => {
-      return menus.list.length;
+    .then((menus : MenuList) => {
+      console.log('hey')
+      return  menus.list.length;
     })
     .then((menuListLength) => {
       if(menuListLength === 0) {
-        this.init()
+        store.init()
       }
     });
   }
 
+  @persist('object') @observable menus = new MenuList();
+
   @action
-  addMenuItem(menuId, menuItem) {
+  addMenuItem(menuId : string, menuItem : MenuItemInterface) : void {
     const item = new MenuItem(menuItem);
     this.menus.addItemToList(menuId,item);
   }
 
   @action
-  updateMenuItem(menuId, menuItem) {
-    this.menus.getMenuById(menuId).itemList.forEach((item) => {
+  updateMenuItem(menuId : string, menuItem : MenuItem) {
+    /*this.menus?.getMenuById(menuId)?.itemList.forEach((item) => {
       if(item.id === menuItem.id) {
-        for (const [key, value] of Object.entries(menuItem)) {
-          item[key] = value;
-        }
+        item = menuItem;
       }
-    });
+    });*/
   }
 
   @action
-  deleteMenuItem(menuId, itemId) {
+  deleteMenuItem(menuId : string, itemId : string) {
     this.menus.removeItem(menuId, itemId);
   }
 

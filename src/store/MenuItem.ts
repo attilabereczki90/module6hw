@@ -1,15 +1,16 @@
 import { observable } from 'mobx';
 import { persist } from 'mobx-persist';
+import { MenuItemInterface } from '../types';
 import { generateId } from '../utils';
 
-class MenuItem {
+export default class MenuItem {
   @persist @observable id = '';
   @persist @observable name = '';
   @persist @observable ingredients = '';
   @persist @observable quantity = '';
   @persist @observable price = '';
 
-  constructor(item = {id: generateId(), name: '', ingredients: '', quantity: '', price: ''}) {
+  constructor(item : MenuItemInterface = {id: generateId(), name: '', ingredients: '', quantity: '', price: ''}) {
     this.id = item.id;
     this.name = item.name;
     this.ingredients = item.ingredients;
@@ -19,5 +20,3 @@ class MenuItem {
     return this;
   }
 }
-
-export default MenuItem;

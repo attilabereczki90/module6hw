@@ -9,12 +9,12 @@ import {
 } from "react-bootstrap";
 import { BsPencil, BsFillTrashFill } from "react-icons/bs";
 import store from '../store/MenuStore';
-import _ from "lodash";
+import { IPropsMenuItemListComponent } from "../types";
 
 @observer
-class MenuItemListComponent extends Component {
+class MenuItemListComponent extends Component<IPropsMenuItemListComponent> {
 
-  constructor(props) {
+  constructor(props : IPropsMenuItemListComponent) {
     super(props);
 
     this.state = {

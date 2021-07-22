@@ -12,7 +12,7 @@ class MainPage extends Component {
     super(props);
 
     this.state = {
-      showAddMenu: {
+      menuObject: {
         menu: {
           id: '',
           name: '',
@@ -28,13 +28,13 @@ class MainPage extends Component {
   };
 
   showAddMenu = () => {
-    const { showAddMenu } = this.state;
-    showAddMenu.show = true;
-    this.setState({showAddMenu});
+    const { menuObject } = this.state;
+    menuObject.show = true;
+    this.setState({menuObject});
   }
   
   closeAddMenu = () => {
-    const showAddMenu = {
+    const menuObject = {
       menu: {
         id: '',
         name: '',
@@ -42,13 +42,13 @@ class MainPage extends Component {
       },
       show: false,
     };
-    this.setState({showAddMenu});
+    this.setState({menuObject});
   };
   
   saveMenu = (menu) => {
     menu.itemList = [];
     store.menus.createMenu(menu);
-    const showAddMenu = {
+    const menuObject = {
       menu: {
         id: '',
         name: '',
@@ -56,7 +56,7 @@ class MainPage extends Component {
       },
       show: false,
     };
-    this.setState({showAddMenu});
+    this.setState({menuObject});
   };
   
   render() {
@@ -97,7 +97,7 @@ class MainPage extends Component {
               })}
           </Switch>
 
-          <EditMenuModal showEditMenu={this.state.showAddMenu} isNew={false} closeMenuModal={this.closeAddMenu} saveChanges={this.saveMenu} />
+          <EditMenuModal showEditMenu={this.state.menuObject} isNew={false} closeMenuModal={this.closeAddMenu} saveChanges={this.saveMenu} />
 
           <span>Welcome to our Restaurant menu application, create your own menus and fill it with delicious dishes!</span>
         </React.Fragment>

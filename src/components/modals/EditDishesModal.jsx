@@ -95,12 +95,13 @@ class EditDishesModal extends Component {
       <Modal
         show={this.props.showEditDishesModal.show}
         onShow={() => {
+          const { id, name, price, ingredients, quantity } = this.props.showEditDishesModal.item;
           this.setState({ menuItem: {
-            id: this.props.showEditDishesModal.item.id,
-            name: this.props.showEditDishesModal.item.name,
-            price: this.props.showEditDishesModal.item.price,
-            ingredients: this.props.showEditDishesModal.item.ingredients,
-            quantity: this.props.showEditDishesModal.item.quantity,
+            id,
+            name,
+            price,
+            ingredients,
+            quantity,
           } });
         }}
         onHide={() => this.props.closeEditDishesModal()}

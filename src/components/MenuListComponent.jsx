@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import {
-  Button,
-  Modal,
   OverlayTrigger,
   Tooltip,
   Container,
@@ -17,7 +15,6 @@ import {
 import { Redirect } from 'react-router';
 import MenuItemListComponent from "./MenuItemListComponent";
 import store from '../store/MenuStore';
-import { generateId } from "../utils";
 import EditDishesModal from "./modals/EditDishesModal";
 import EditMenuModal from "./modals/EditMenuModal";
 
@@ -52,11 +49,6 @@ class MenuListComponent extends Component {
 
     this.nameInputRef = React.createRef()
     this.descInputRef = React.createRef();
-    
-    this.itemNameRef = React.createRef();
-    this.itemPriceRef = React.createRef();
-    this.itemQuantityRef = React.createRef();
-    this.ingredientsRef = React.createRef();
   }
 
   removeCurrentMenu = () => {

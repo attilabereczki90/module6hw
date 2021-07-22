@@ -2,7 +2,7 @@ import {
   observable,
   action,
 } from 'mobx';
-import MenuList from './MenuList';
+import MenuList, { MenuSchema } from './MenuList';
 import MenuItem from './MenuItem';
 import { create, persist } from 'mobx-persist';
 import localForage from 'localforage';
@@ -15,6 +15,8 @@ const hydrate = create({
 });
 
 export class MenuStore {
+  @persist('object', MenuSchema) @observable.deep menus = new MenuList();
+
   constructor() {
     hydrate('menulist', this.menus)
     .then((menus : MenuList) => {
@@ -27,8 +29,6 @@ export class MenuStore {
       }
     });
   }
-
-  @persist('object') @observable menus = new MenuList();
 
   @action
   addMenuItem(menuId : string, menuItem : MenuItemInterface) : void {

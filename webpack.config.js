@@ -4,7 +4,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 process.env.NODE_ENV = "test";
 
 module.exports = {
-  devtool: 'eval',
+  devtool: 'inline-source-map',
   mode: 'development',
   entry: [
     './src/index'
@@ -33,6 +33,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
+        exclude: /node_modules/,
       }
     ]
   },

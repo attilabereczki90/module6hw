@@ -7,7 +7,7 @@ export class MenuSchema {
   @persist @observable id : string = '';
   @persist @observable name : string = ''; 
   @persist @observable description : string = '';
-  @persist('list') @observable itemList : MenuItem[] = [];
+  @persist('list') @observable.deep itemList : MenuItem[] = [];
 }
 
 export default class MenuList {

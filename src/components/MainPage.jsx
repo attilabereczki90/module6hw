@@ -4,7 +4,7 @@ import { Button, Navbar, Nav } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MenuListComponent from './MenuListComponent';
 import store from '../store/MenuStore';
-import EditMenuModal from "./modals/EditMenuModal";
+import EditMenu from "./modals/EditMenu";
 
 @observer
 class MainPage extends Component {
@@ -20,7 +20,6 @@ class MainPage extends Component {
         },
         show: false,
       },
-      selectedTab: 'home',
     }
   }
   createRouterPath = (routerName) => {
@@ -30,6 +29,7 @@ class MainPage extends Component {
   showAddMenu = () => {
     const { menuObject } = this.state;
     menuObject.show = true;
+    
     this.setState({menuObject});
   }
   
@@ -97,7 +97,7 @@ class MainPage extends Component {
               })}
           </Switch>
 
-          <EditMenuModal showEditMenu={this.state.menuObject} isNew={false} closeMenuModal={this.closeAddMenu} saveChanges={this.saveMenu} />
+          <EditMenu showEditMenu={this.state.menuObject} isNew={true} closeMenuModal={this.closeAddMenu} saveMenu={this.saveMenu} />
 
           <span>Welcome to our Restaurant menu application, create your own menus and fill it with delicious dishes!</span>
         </React.Fragment>

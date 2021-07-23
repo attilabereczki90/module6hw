@@ -15,8 +15,8 @@ import {
 import { Redirect } from 'react-router';
 import MenuItemListComponent from "./MenuItemListComponent";
 import store from '../store/MenuStore';
-import EditDishesModal from "./modals/EditDishesModal";
-import EditMenuModal from "./modals/EditMenuModal";
+import EditDishes from "./modals/EditDishes";
+import EditMenu from "./modals/EditMenu";
 
 @observer
 class MenuListComponent extends Component {
@@ -33,7 +33,7 @@ class MenuListComponent extends Component {
         },
         show: false,
       },
-      showEditDishesModal: {
+      showEditDishes: {
         item: {
           id: '',
           name: '',
@@ -85,7 +85,7 @@ class MenuListComponent extends Component {
       store.updateMenuItem(this.props.id, item);
     }
 
-    const showEditDishesModal = {
+    const showEditDishes = {
       item: {
         id: '',
         name: '',
@@ -96,7 +96,7 @@ class MenuListComponent extends Component {
       show: false
     };
     
-    this.setState({ showEditDishesModal });
+    this.setState({ showEditDishes });
   };
 
   removeItem = (itemId) => {
@@ -108,12 +108,12 @@ class MenuListComponent extends Component {
     if(id) {
       item = store.menus.getMenuItemById(this.props.id,id);
 
-      const showEditDishesModal = {
+      const showEditDishes = {
         item,
         show: true,
       };
 
-      this.setState({ showEditDishesModal, isNew: false });
+      this.setState({ showEditDishes, isNew: false });
     } else {
       item = {
         id: '',
@@ -122,11 +122,11 @@ class MenuListComponent extends Component {
         quantity: '',
         price: '',
       };
-      const showEditDishesModal = {
+      const showEditDishes = {
         item, 
         show: true
       };
-      this.setState({ showEditDishesModal, isNew: true });
+      this.setState({ showEditDishes, isNew: true });
     }
   }
 
@@ -159,11 +159,11 @@ class MenuListComponent extends Component {
       quantity: '',
       price: '',
     };
-    const showEditDishesModal = {
+    const showEditDishes = {
       item,
       show: false
     };
-    this.setState({ showEditDishesModal, isNew: false });
+    this.setState({ showEditDishes, isNew: false });
   }
 
   render() {
@@ -220,9 +220,9 @@ class MenuListComponent extends Component {
           </Row>
         </Container>
 
-        <EditMenuModal showEditMenu={this.state.showEditMenu} isNew={false} closeMenuModal={this.closeMenuModal} saveChanges={this.saveChanges} />
+        <EditMenu showEditMenu={this.state.showEditMenu} isNew={false} closeMenuModal={this.closeMenuModal} saveMenu={this.saveChanges} />
 
-        <EditDishesModal menuId={this.props.id} showEditDishesModal={this.state.showEditDishesModal} isNew={this.state.isNew} closeEditDishesModal={this.closeEditDishesModal} saveDetailsChange={this.saveDetailsChange} />
+        <EditDishes menuId={this.props.id} showEditDishes={this.state.showEditDishes} isNew={this.state.isNew} closeEditDishes={this.closeEditDishesModal} saveDetailsChange={this.saveDetailsChange} />
 
       </React.Fragment>
     );

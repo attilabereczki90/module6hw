@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+## Description
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Pub menu
 
-## Available Scripts
+Create the front-end for a web application that manages the menus of a pub. A menu is a list of items (food, drinks, snacks, etc.) that the pub sells containing their names, main ingredients and prices.
 
-In the project directory, you can run:
+Features:
 
-### `npm start`
+* Create main page with all the menu titles, which are clickable and lead to the menu details pages.
+* On the main page create an „Add new menu” button with that we can add a new menu with the following details:
+    * Name (e.g. food menu, drinks, wine menu, cocktails, etc.)
+    * Id (for routing, e.g. food-menu)
+    * Description
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Any number of new menus can be added.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+* Clicking on the individual menus leads us to the menu details page, listing all the contents of the menu and a button for „Add new item” clicking on which we can add a new item with the following details:
+    * Name
+    * Main ingredients
+    * Quantity (e.g. 200gr, 300ml)
+    * Price
 
-### `npm test`
+All items that we created must be editable. The create/edit features can be implemented either by using a modal dialog or a new page. Routes must be created for homepage and the menu details pages (and the edit pages if that approach is chosen).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+State management should be used. Data should be saved into local storage and reloaded at browser refresh as initial state.
 
-### `npm run build`
+Possible technologies to choose from:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* Angular + NgRx/store
+* React + MobX
+* Vue + Vuex
